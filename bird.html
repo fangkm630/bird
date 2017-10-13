@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    0 加载所有图片
+    1 添加天空对象
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            border: 1px dashed black;
+        }
+    </style>
+    <script src="./sky.js"></script>
+</head>
+<body>
+<canvas width="800" height="600" id="canvas"></canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    //    1 加载所有的图片
+    var birdImg = new Image();
+    var landImg = new Image();
+    var pipe1Img = new Image();
+    var pipe2Img = new Image();
+    var skyImg = new Image();
+    birdImg.src = "./img/birds.png";
+    landImg.src = "./img/land.png";
+    pipe1Img.src = "./img/pipe1.png";
+    pipe2Img.src = "./img/pipe2.png";
+    skyImg.src = "./img/sky.png";
+    //   2 判断所有图片是否加载完毕
+    var count = 0;
+    var imgs = [birdImg, landImg, pipe1Img, pipe2Img, skyImg];
+    imgs.forEach(function (value) {
+        value.onload = function () {
+            count++;
+            if (count == imgs.length) {
+//                console.log("..");
+//              3 创建一个角色数组 存储所有对象
+                var rolesArr = [];
+
+                function createRoles() {
+//                    4 创建对象
+//                    4.1 创建天空对象,需要2张天空图片实现循环播放
+                    for (var i = 0; i < 2; i++) {
+                        var sky = new Sky({
+                            image: skyImg,
+                            x: i * skyImg.width,
+                            canvas: canvas,
+                            context: context,
+                        })
+                        rolesArr.push(sky);
+
+                    }
+                }
+
+//                5 创建角色
+                createRoles();
+//                6 开始执行动画
+                function action() {
+//                    a. 清空画布
+                    context.clearRect(0,0,canvas.width,canvas.height);
+//                    b 绘制角色
+                    rolesArr.forEach(function (value) {
+//                        画出图片
+                        value.draw();
+                    });
+                    window.requestAnimationFrame(action)
+                }
+                action();
+            }
+        }
+    })
+
+</script>
+</body>
+</html>
